@@ -7,6 +7,10 @@
 2. এই zip টা এক্সট্র্যাক্ট করে সব ফাইল ঐ repo তে আপলোড করুন
    (GitHub website থেকে "Add file" → "Upload files" দিয়ে ড্র্যাগ-ড্রপ করলেই হবে)
 
+⚠️ **খুব জরুরি:** `gradlew`, `gradlew.bat` আর `gradle/` ফোল্ডারটা অবশ্যই আপলোড করতে হবে।
+এগুলোই Gradle wrapper — এগুলো ছাড়া build চালু হওয়ার আগেই fail করবে
+("Grant execute permission for gradlew" স্টেপে লাল ❌ দেখাবে)।
+
 ## ধাপ ২ — App এর নাম বদলান
 ফাইল: `app/src/main/res/values/strings.xml`
 এখানে `My Clone App` এর জায়গায় আপনার অ্যাপের নাম লিখুন।
