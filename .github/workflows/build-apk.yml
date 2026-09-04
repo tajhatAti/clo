@@ -1,0 +1,44 @@
+name: Build Clone APK
+
+# push দিলে বা ম্যানুয়ালি Run workflow বাটনে চাপ দিলে চলবে
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Grant execute permission for gradlew
+        run: |
+          if [ ! -f gradlew ]; then
+            gradle wrapper --gradle-version 8.4
+          fi
+          chmod +x gradlew
+
+      - name: Create debug keystore for signing
+        run: |
+          keytool -genkeypair -v -keystore app/debug.keystore \
+            -storepass android -alias androiddebugkey \
+            -keypass android -keyalg RSA -keysize 2048 -validity 10000 \
+            -dname "CN=Clone,O=Clone,C=US"
+
+      - name: Build APK
+        run: ./gradlew assembleRelease --stacktrace
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: clone-app-apk
+          path: app/build/outputs/apk/release/*.apk

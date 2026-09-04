@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- এখানে অ্যাপের নাম বদলান -->
+    <string name="app_name">My Clone App</string>
+</resources>
