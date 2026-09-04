@@ -12,25 +12,32 @@ android {
         versionName "1.0"
     }
 
-    // Signing with a debug key so GitHub Actions can build
-    // an installable APK without extra secrets.
+    // GitHub Actions (এবং আপনার নিজের কম্পিউটার) যেন কোনো extra secret ছাড়াই
+    // installable APK বানাতে পারে, তার জন্য debug keystore দিয়ে sign করা হয়।
+    def releaseKeystore = file("debug.keystore")
+
     signingConfigs {
-        release {
-            storeFile file("debug.keystore")
-            storePassword "android"
-            keyAlias "androiddebugkey"
-            keyPassword "android"
+        if (releaseKeystore.exists()) {
+            release {
+                storeFile releaseKeystore
+                storePassword "android"
+                keyAlias "androiddebugkey"
+                keyPassword "android"
+            }
         }
     }
 
     buildTypes {
         release {
             minifyEnabled false
-            signingConfig signingConfigs.release
+            // debug.keystore থাকলে সেটা দিয়ে sign করবে,
+            // না থাকলে Gradle এর নিজের debug key ব্যবহার করবে (build fail হবে না)।
+            signingConfig releaseKeystore.exists() ? signingConfigs.release : signingConfigs.debug
         }
     }
 }
 
 dependencies {
-    implementation 'androidx.appcompat:appcompat:1.6.1'
+    // কোনো external dependency নেই — শুধু Android framework (Activity + WebView) ব্যবহার করছি।
+    // তাই build এর সময় ইন্টারনেট থেকে কিছু ডাউনলোড করতে হয় না, build আরও দ্রুত ও নির্ভরযোগ্য।
 }
